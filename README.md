@@ -1,2 +1,1 @@
-# all
-THE PROJECT
+index.html
