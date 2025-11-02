@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoPay - Sistem Pembayaran Otomatis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white font-sans">
+    
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full bg-black/30 backdrop-blur-lg border-b border-white/10 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">💳</span>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">AutoPay</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-white/10 transition">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                    <a href="dashboard.html" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition">
+                        Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4">
+        <div class="container mx-auto text-center">
+            <div class="inline-block mb-4 px-4 py-2 bg-purple-500/20 border border-purple-500/30 rounded-full">
+                <span class="text-purple-300 text-sm font-semibold">✨ Sistem Pembayaran Otomatis</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-gradient">
+                Pembayaran Cepat & Aman
+            </h1>
+            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                Sistem pembayaran otomatis dengan berbagai metode pembayaran. Proses instan, notifikasi real-time, dan keamanan terjamin.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="scrollToProducts()" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-semibold text-lg shadow-lg shadow-purple-500/50 transition transform hover:scale-105">
+                    Lihat Produk
+                </button>
+                <button onclick="window.location.href='#features'" class="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl font-semibold text-lg border border-white/20 transition">
+                    Pelajari Lebih Lanjut
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Mengapa Memilih AutoPay?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="text-2xl font-bold mb-3">Proses Instan</h3>
+                    <p class="text-gray-300">Pembayaran diproses secara otomatis dalam hitungan detik tanpa perlu konfirmasi manual.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+                    <div class="text-5xl mb-4">🔒</div>
+                    <h3 class="text-2xl font-bold mb-3">Aman & Terpercaya</h3>
+                    <p class="text-gray-300">Sistem keamanan berlapis dengan enkripsi data dan proteksi transaksi.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition">
+                    <div class="text-5xl mb-4">📱</div>
+                    <h3 class="text-2xl font-bold mb-3">Multi Platform</h3>
+                    <p class="text-gray-300">Notifikasi otomatis via Telegram, WhatsApp, dan Email untuk setiap transaksi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Methods -->
+    <section class="py-20 px-4 bg-black/20">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Metode Pembayaran</h2>
+            <div class="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 rounded-xl p-6 text-center hover:scale-105 transition">
+                    <div class="text-4xl mb-2">💳</div>
+                    <p class="font-semibold">QRIS</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 rounded-xl p-6 text-center hover:scale-105 transition">
+                    <div class="text-4xl mb-2">💰</div>
+                    <p class="font-semibold">DANA</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-xl p-6 text-center hover:scale-105 transition">
+                    <div class="text-4xl mb-2">📱</div>
+                    <p class="font-semibold">OVO</p>
+                </div>
+                <div class="bg-gradient-to-br from-pink-500/20 to-pink-600/20 border border-pink-500/30 rounded-xl p-6 text-center hover:scale-105 transition">
+                    <div class="text-4xl mb-2">🏦</div>
+                    <p class="font-semibold">Transfer Bank</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-12">Produk & Layanan</h2>
+            <div id="productList" class="grid md:grid-cols-3 gap-8">
+                <!-- Products will be loaded here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-4 bg-black/20">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">1000+</div>
+                    <p class="text-gray-300">Transaksi Berhasil</p>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">500+</div>
+                    <p class="text-gray-300">Pelanggan Puas</p>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">24/7</div>
+                    <p class="text-gray-300">Support Online</p>
+                </div>
+                <div>
+                    <div class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">99.9%</div>
+                    <p class="text-gray-300">Uptime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-20 px-4">
+        <div class="container mx-auto max-w-2xl text-center">
+            <h2 class="text-4xl font-bold mb-6">Butuh Bantuan?</h2>
+            <p class="text-gray-300 mb-8">Tim support kami siap membantu Anda 24/7</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://t.me/Death_co" target="_blank" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition flex items-center space-x-2">
+                    <span>💬</span>
+                    <span>Telegram</span>
+                </a>
+                <a href="https://wa.me/6283116147036" target="_blank" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition flex items-center space-x-2">
+                    <span>📱</span>
+                    <span>WhatsApp</span>
+                </a>
+                <a href="mailto:cs.aobi5198@gmail.com" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition flex items-center space-x-2">
+                    <span>📧</span>
+                    <span>Email</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-4 border-t border-white/10">
+        <div class="container mx-auto text-center text-gray-400">
+            <p>&copy; 2025 AutoPay - Sistem Pembayaran Otomatis. All rights reserved.</p>
+            <p class="mt-2 text-sm">Powered by ObyMoods</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleDarkMode() {
+            // Already in dark mode by default
+            const icon = document.getElementById('themeIcon');
+            icon.textContent = icon.textContent === '🌙' ? '☀️' : '🌙';
+        }
+
+        // Load products on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>
