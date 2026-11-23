@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Architecture & Development Pipeline</title>
+    <style>
+        :root {
+            --bg-primary: #090d16;
+            --bg-secondary: #111827;
+            --bg-card: #161f33;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #1e293b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        /* Pipeline Grid */
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stage-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-cyan);
+        }
+
+        .stage-card.active {
+            border-color: var(--accent-cyan);
+            background: linear-gradient(145deg, #161f33, #0f293a);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+
+        .stage-num {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .stage-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .stage-sub {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        /* Inspector Panel */
+        .inspector-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 850px) {
+            .inspector-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .inspector-info h2 {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .inspector-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: monospace;
+        }
+
+        .param-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .param-box label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-cyan);
+        }
+
+        /* Code Tabs */
+        .code-container {
+            background: #060911;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0f1626;
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border-color: rgba(6, 182, 212, 0.4);
+        }
+
+        .copy-btn {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Fira Code', monospace;
+            font-size: 0.86rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        /* Simulators Section */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .sim-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sim-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem;
+        }
+
+        .sim-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .sim-card p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        canvas {
+            width: 100%;
+            height: 240px;
+            background: #060911;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--accent-cyan);
+            color: #041019;
+            border: none;
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .metrics {
+            margin-left: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--accent-emerald);
+        }
+
+        /* Tokenizer */
+        .token-input {
+            width: 100%;
+            background: #060911;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .token-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            margin-bottom: 1.25rem;
+            min-height: 36px;
+        }
+
+        .token-chip {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.82rem;
+        }
+
+        .prob-bar-wrap {
+            margin-bottom: 0.65rem;
+        }
+
+        .prob-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-family: monospace;
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+
+        .prob-track {
+            width: 100%;
+            height: 8px;
+            background: #060911;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .prob-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">END-TO-END AI ENGINEERING ARCHITECTURE</div>
+            <h1>Struktur & Pipeline Pembuatan AI</h1>
+            <p>Eksplorasi interaktif arsitektur sistem kecerdasan buatan dari pengumpulan data mentah hingga inferensi produksi berbasis JavaScript & Python.</p>
+        </header>
+
+        <!-- 6 Pipeline Stages -->
+        <div class="pipeline-grid" id="pipelineGrid"></div>
+
+        <!-- Stage Inspector -->
+        <div class="inspector-panel">
+            <div class="inspector-info">
+                <div class="stage-num" id="inspStep">TAHAP 01</div>
+                <h2 id="inspTitle">Data Collection & Ingestion</h2>
+                <p id="inspDesc"></p>
+                <div class="tech-tags" id="inspTags"></div>
+
+                <div class="param-box">
+                    <label>
+                        <span id="paramName">Batch Size / Chunk Size</span>
+                        <span id="paramVal" style="color: var(--accent-cyan); font-family: monospace;">512</span>
+                    </label>
+                    <input type="range" id="paramSlider" min="64" max="2048" step="64" value="512">
+                    <div id="paramEffect" style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;"></div>
+                </div>
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="tab-btns">
+                        <button class="tab-btn active" data-lang="js">JavaScript (Node / TF.js)</button>
+                        <button class="tab-btn" data-lang="py">Python (PyTorch)</button>
+                    </div>
+                    <button class="copy-btn" id="copyBtn">Salin Kode</button>
+                </div>
+                <pre><code id="codeBlock"></code></pre>
+            </div>
+        </div>
+
+        <!-- Interactive JS Simulators -->
+        <div class="sim-grid">
+            <!-- Neural Network Simulator -->
+            <div class="sim-card">
+                <h3>Live JS Neural Network (2-3-1)</h3>
+                <p>Simulasi nyata Forward Pass & Backpropagation (XOR Problem) yang dihitung langsung di browser menggunakan JavaScript.</p>
+                <canvas id="nnCanvas" width="500" height="240"></canvas>
+                <div class="btn-group">
+                    <button class="btn" id="trainStepBtn">Train 50 Epochs</button>
+                    <button class="btn btn-secondary" id="autoTrainBtn">Auto-Train</button>
+                    <button class="btn btn-secondary" id="resetNnBtn">Reset</button>
+                    <div class="metrics" id="nnMetrics">Epoch: 0 | Loss: 0.2500</div>
+                </div>
+            </div>
+
+            <!-- Tokenizer & Inference Simulator -->
+            <div class="sim-card">
+                <h3>Live JS Tokenizer & Next-Token Softmax</h3>
+                <p>Ketik prompt untuk memecah teks menjadi token ID, vektor embedding, dan simulasi probabilitas prediksi kata berikutnya.</p>
+                <input type="text" class="token-input" id="promptInput" value="Arsitektur AI modern menggunakan jaringan">
+                <div class="token-list" id="tokenList"></div>
+                <div id="probContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. DATA PIPELINE STAGES
+        const stages = [
+            {
+                step: "TAHAP 01",
+                title: "Data Collection & Ingestion",
+                short: "Scraping, dataset publik & stream API",
+                desc: "Fondasi utama AI dimulai dari pengumpulan dataset berskala besar (teks, gambar, audio, atau log telemetri) dari database, web scraping, maupun pipeline streaming real-time.",
+                tags: ["Web Scraping", "HuggingFace Datasets", "Apache Kafka", "JSONL / Parquet"],
+                paramName: "Ingestion Batch Size",
+                paramMin: 64, paramMax: 2048, paramStep: 64, paramDefault: 512,
+                paramUnit: " records/batch",
+                jsCode: `// Data Ingestion menggunakan Node.js Streams
+import fs from 'fs';
+import readline from 'readline';
+
+async function ingestDataset(filePath, batchSize = 512) {
+  const fileStream = fs.createReadStream(filePath);
+  const rl = readline.createInterface({ input: fileStream });
+  let batch = [];
+
+  for await (const line of rl) {
+    batch.push(JSON.parse(line));
+    if (batch.length >= batchSize) {
+      await processBatch(batch);
+      batch = [];
+    }
+  }
+  console.log("Ingestion selesai.");
+}`,
+                pyCode: `# Data Ingestion menggunakan HuggingFace Datasets
+from datasets import load_dataset
+
+dataset = load_dataset(
+    "wikimedia/wikipedia",
+    "20231101.id",
+    split="train",
+    streaming=True
+)
+
+for batch in dataset.iter(batch_size=512):
+    print(f"Loaded {len(batch['text'])} documents")
+    break`
+            },
+            {
+                step: "TAHAP 02",
+                title: "Preprocessing & Tokenization",
+                short: "Cleaning, normalisasi & token ID",
+                desc: "Data mentah dibersihkan dari noise/duplikat, dinormalisasi, lalu dipecah menjadi sub-kata (tokens) dan dipetakan ke vektor numerik (embeddings) agar dapat dipahami model.",
+                tags: ["BPE Tokenizer", "Tiktoken", "Normalization", "Vector Embeddings"],
+                paramName: "Max Context Window",
+                paramMin: 512, paramMax: 8192, paramStep: 512, paramDefault: 2048,
+                paramUnit: " tokens",
+                jsCode: `// Tokenisasi & Normalisasi Teks di JavaScript
+function tokenizeText(text, maxTokens = 2048) {
+  const cleaned = text.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+  const words = cleaned.split(/\s+/).slice(0, maxTokens);
+  
+  // Konversi kata ke hash Token ID
+  return words.map(word => ({
+    token: word,
+    id: [...word].reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 7) % 50257
+  }));
+}
+
+console.log(tokenizeText("Membangun AI dari nol!"));`,
+                pyCode: `# Tokenisasi dengan Transformers AutoTokenizer
+from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("bert-base-multilingual-cased")
+tokens = tokenizer(
+    "Membangun arsitektur AI modern",
+    max_length=2048,
+    truncation=True,
+    return_tensors="pt"
+)
+print("Input IDs:", tokens["input_ids"])`
+            },
+            {
+                step: "TAHAP 03",
+                title: "Model Architecture Design",
+                short: "Transformer, Attention & Neural Layers",
+                desc: "Menentukan struktur jaringan saraf tiruan: jumlah layer, dimensi hidden state, mekanisme Self-Attention (pada LLM), atau Convolutional layers (pada Computer Vision).",
+                tags: ["Transformer", "Self-Attention", "Multi-Layer Perceptron", "TensorFlow.js"],
+                paramName: "Hidden Layer Neurons",
+                paramMin: 32, paramMax: 1024, paramStep: 32, paramDefault: 256,
+                paramUnit: " units",
+                jsCode: `// Definisi Arsitektur Neural Network dengan TensorFlow.js
+import * as tf from '@tensorflow/tfjs';
+
+function buildModel(hiddenUnits = 256) {
+  const model = tf.sequential();
+  model.add(tf.layers.dense({ inputShape: [128], units: hiddenUnits, activation: 'relu' }));
+  model.add(tf.layers.dropout({ rate: 0.2 }));
+  model.add(tf.layers.dense({ units: 10, activation: 'softmax' }));
+  return model;
+}`,
+                pyCode: `# Definisi Arsitektur Neural Network dengan PyTorch
+import torch.nn as nn
+
+class NeuralNet(nn.Module):
+    def __init__(self, hidden_units=256):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(128, hidden_units),
+            nn.GELU(),
+            nn.Dropout(0.2),
+            nn.Linear(hidden_units, 10)
+        )
+    def forward(self, x):
+        return self.net(x)`
+            },
+            {
+                step: "TAHAP 04",
+                title: "Training & Backpropagation",
+                short: "Loss calculation & Gradient Descent",
+                desc: "Model melatih bobot (weights) secara iteratif dengan membandingkan prediksi terhadap label asli menggunakan Loss Function, lalu memperbarui parameter via Optimizer (AdamW).",
+                tags: ["Backpropagation", "AdamW Optimizer", "Cross-Entropy Loss", "GPU CUDA"],
+                paramName: "Learning Rate (x10^-4)",
+                paramMin: 1, paramMax: 50, paramStep: 1, paramDefault: 3,
+                paramUnit: "e-4",
+                jsCode: `// Kompilasi & Training Loop di TensorFlow.js
+async function trainModel(model, xs, ys, lrFactor = 3) {
+  const lr = lrFactor * 0.0001;
+  model.compile({
+    optimizer: tf.train.adam(lr),
+    loss: 'categoricalCrossentropy',
+    metrics: ['accuracy']
+  });
+
+  await model.fit(xs, ys, {
+    epochs: 20,
+    batchSize: 32,
+    callbacks: { onEpochEnd: (epoch, logs) => console.log(epoch, logs.loss) }
+  });
+}`,
+                pyCode: `# Training Loop Standar PyTorch
+import torch
+
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+criterion = nn.CrossEntropyLoss()
+
+for epoch in range(20):
+    optimizer.zero_grad()
+    output = model(inputs)
+    loss = criterion(output, targets)
+    loss.backward()
+    optimizer.step()`
+            },
+            {
+                step: "TAHAP 05",
+                title: "Evaluation & Alignment",
+                short: "Benchmark, RLHF & Guardrails",
+                desc: "Menguji akurasi dan halusinasi pada dataset validasi yang belum pernah dilihat model, dilanjutkan dengan penyelarasan perilaku manusia (RLHF / DPO) dan filter keamanan.",
+                tags: ["Validation Loss", "RLHF / DPO", "F1-Score", "Red Teaming"],
+                paramName: "Confidence Threshold",
+                paramMin: 50, paramMax: 99, paramStep: 1, paramDefault: 85,
+                paramUnit: "%",
+                jsCode: `// Evaluasi & Threshold Filtering pada Output AI
+function evaluatePrediction(probabilities, threshold = 0.85) {
+  const maxProb = Math.max(...probabilities);
+  const predictedClass = probabilities.indexOf(maxProb);
+
+  if (maxProb < threshold) {
+    return { status: "FALLBACK_HUMAN", confidence: maxProb };
+  }
+  return { status: "APPROVED", classId: predictedClass, confidence: maxProb };
+}`,
+                pyCode: `# Evaluasi Akurasi Model pada Validation Set
+model.eval()
+correct, total = 0, 0
+with torch.no_grad():
+    for x_val, y_val in val_loader:
+        preds = model(x_val).argmax(dim=-1)
+        correct += (preds == y_val).sum().item()
+        total += y_val.size(0)
+print(f"Validation Accuracy: {correct / total:.2%}")`
+            },
+            {
+                step: "TAHAP 06",
+                title: "Deployment & Inference API",
+                short: "Quantization, REST/SSE API & Scaling",
+                desc: "Model dikompresi (quantization FP16/INT8) agar ringan, lalu dibungkus menjadi layanan API berlatensi rendah dengan streaming respons ke aplikasi pengguna.",
+                tags: ["ONNX / GGUF", "Node.js / FastAPI", "Quantization", "Streaming SSE"],
+                paramName: "Sampling Temperature",
+                paramMin: 0, paramMax: 100, paramStep: 5, paramDefault: 70,
+                paramUnit: " (x0.01)",
+                jsCode: `// Endpoint Inferensi AI dengan Node.js & Express
+import express from 'express';
+const app = express();
+app.use(express.json());
+
+app.post('/api/v1/generate', async (req, res) => {
+  const { prompt, temperature = 0.7 } = req.body;
+  const result = await aiEngine.infer(prompt, { temp: temperature });
+  res.json({ status: 'ok', output: result });
+});
+
+app.listen(3000, () => console.log('AI Inference API aktif di port 3000'));`,
+                pyCode: `# Serving Model dengan FastAPI
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class PromptReq(BaseModel):
+    prompt: str
+    temperature: float = 0.7
+
+@app.post("/api/v1/generate")
+async def generate(req: PromptReq):
+    output = model.generate(req.prompt, temperature=req.temperature)
+    return {"output": output}`
+            }
+        ];
+
+        let currentStage = 0;
+        let currentLang = 'js';
+
+        const grid = document.getElementById('pipelineGrid');
+        const codeBlock = document.getElementById('codeBlock');
+        const paramSlider = document.getElementById('paramSlider');
+        const paramVal = document.getElementById('paramVal');
+        const paramEffect = document.getElementById('paramEffect');
+
+        function renderPipeline() {
+            grid.innerHTML = stages.map((s, idx) => `
+                <div class="stage-card ${idx === currentStage ? 'active' : ''}" onclick="selectStage(${idx})">
+                    <div class="stage-num">${s.step}</div>
+                    <div class="stage-title">${s.title}</div>
+                    <div class="stage-sub">${s.short}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectStage(idx) {
+            currentStage = idx;
+            const s = stages[idx];
+            document.getElementById('inspStep').textContent = s.step;
+            document.getElementById('inspTitle').textContent = s.title;
+            document.getElementById('inspDesc').textContent = s.desc;
+            document.getElementById('inspTags').innerHTML = s.tags.map(t => `<span class="tech-tag">${t}</span>`).join('');
+            
+            document.getElementById('paramName').textContent = s.paramName;
+            paramSlider.min = s.paramMin;
+            paramSlider.max = s.paramMax;
+            paramSlider.step = s.paramStep;
+            paramSlider.value = s.paramDefault;
+            updateParamDisplay();
+            updateCodeDisplay();
+            renderPipeline();
+        }
+
+        function updateParamDisplay() {
+            const s = stages[currentStage];
+            const val = paramSlider.value;
+            paramVal.textContent = val + s.paramUnit;
+            const ratio = (val - s.paramMin) / (s.paramMax - s.paramMin);
+            paramEffect.textContent = ratio > 0.65
+                ? "Konfigurasi tinggi: Kapasitas/eksplorasi maksimal, membutuhkan memori VRAM lebih besar."
+                : ratio < 0.35
+                ? "Konfigurasi rendah: Eksekusi lebih cepat & deterministik, konsumsi resource hemat."
+                : "Konfigurasi seimbang: Optimal untuk stabilitas training dan latensi produksi.";
+        }
+
+        function updateCodeDisplay() {
+            const s = stages[currentStage];
+            codeBlock.textContent = currentLang === 'js' ? s.jsCode : s.pyCode;
+        }
+
+        paramSlider.addEventListener('input', updateParamDisplay);
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                updateCodeDisplay();
+            });
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(codeBlock.textContent);
+            const btn = document.getElementById('copyBtn');
+            btn.textContent = "Tersalin!";
+            setTimeout(() => btn.textContent = "Salin Kode", 1500);
+        });
+
+        // 2. LIVE NEURAL NETWORK (2-3-1 XOR BACKPROPAGATION)
+        const canvas = document.getElementById('nnCanvas');
+        const ctx = canvas.getContext('2d');
+        const sigmoid = x => 1 / (1 + Math.exp(-x));
+        const dsigmoid = y => y * (1 - y);
+
+        let nn = {};
+        let autoTimer = null;
+
+        function resetNN() {
+            nn = {
+                epoch: 0,
+                loss: 0.25,
+                w1: Array.from({length: 2}, () => Array.from({length: 3}, () => Math.random() * 2 - 1)),
+                b1: Array.from({length: 3}, () => Math.random() * 2 - 1),
+                w2: Array.from({length: 3}, () => Math.random() * 2 - 1),
+                b2: Math.random() * 2 - 1,
+                h: [0.5, 0.5, 0.5],
+                out: 0.5
+            };
+            drawNN();
+            updateNNMetrics();
+        }
+
+        function trainEpochs(count = 50) {
+            const xorData = [
+                { x: [0, 0], y: 0 },
+                { x: [0, 1], y: 1 },
+                { x: [1, 0], y: 1 },
+                { x: [1, 1], y: 0 }
+            ];
+            const lr = 0.6;
+
+            for (let e = 0; e < count; e++) {
+                let totalLoss = 0;
+                for (const sample of xorData) {
+                    // Forward pass
+                    const h = [0, 0, 0];
+                    for (let j = 0; j < 3; j++) {
+                        let sum = nn.b1[j] + sample.x[0] * nn.w1[0][j] + sample.x[1] * nn.w1[1][j];
+                        h[j] = sigmoid(sum);
+                    }
+                    let outSum = nn.b2 + h[0] * nn.w2[0] + h[1] * nn.w2[1] + h[2] * nn.w2[2];
+                    const out = sigmoid(outSum);
+
+                    const err = sample.y - out;
+                    totalLoss += err * err;
+
+                    // Backpropagation
+                    const dOut = err * dsigmoid(out);
+                    for (let j = 0; j < 3; j++) {
+                        const dHidden = dOut * nn.w2[j] * dsigmoid(h[j]);
+                        nn.w2[j] += lr * dOut * h[j];
+                        nn.w1[0][j] += lr * dHidden * sample.x[0];
+                        nn.w1[1][j] += lr * dHidden * sample.x[1];
+                        nn.b1[j] += lr * dHidden;
+                    }
+                    nn.b2 += lr * dOut;
+                    nn.h = h;
+                    nn.out = out;
+                }
+                nn.epoch++;
+                nn.loss = totalLoss / 4;
+            }
+            drawNN();
+            updateNNMetrics();
+        }
+
+        function drawNN() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const layers = [
+                [{x: 90, y: 80, val: 1}, {x: 90, y: 160, val: 0}],
+                [{x: 250, y: 50, val: nn.h[0]}, {x: 250, y: 120, val: nn.h[1]}, {x: 250, y: 190, val: nn.h[2]}],
+                [{x: 410, y: 120, val: nn.out}]
+            ];
+
+            // Draw weights L1 -> L2
+            for (let i = 0; i < 2; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const w = nn.w1[i][j];
+                    ctx.strokeStyle = w >= 0 ? `rgba(6, 182, 212, ${Math.min(Math.abs(w)/3 + 0.2, 1)})` : `rgba(244, 63, 94, ${Math.min(Math.abs(w)/3 + 0.2, 1)})`;
+                    ctx.lineWidth = Math.min(Math.abs(w) * 1.5 + 1, 5);
+                    ctx.beginPath();
+                    ctx.moveTo(layers[0][i].x, layers[0][i].y);
+                    ctx.lineTo(layers[1][j].x, layers[1][j].y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw weights L2 -> L3
+            for (let j = 0; j < 3; j++) {
+                const w = nn.w2[j];
+                ctx.strokeStyle = w >= 0 ? `rgba(16, 185, 129, ${Math.min(Math.abs(w)/3 + 0.2, 1)})` : `rgba(244, 63, 94, ${Math.min(Math.abs(w)/3 + 0.2, 1)})`;
+                ctx.lineWidth = Math.min(Math.abs(w) * 1.5 + 1, 5);
+                ctx.beginPath();
+                ctx.moveTo(layers[1][j].x, layers[1][j].y);
+                ctx.lineTo(layers[2][0].x, layers[2][0].y);
+                ctx.stroke();
+            }
+
+            // Draw nodes
+            layers.forEach((layer, lIdx) => {
+                layer.forEach(node => {
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fill();
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = lIdx === 0 ? '#38bdf8' : lIdx === 1 ? '#a855f7' : '#10b981';
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.font = '11px monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(node.val.toFixed(2), node.x, node.y);
+                });
+            });
+        }
+
+        function updateNNMetrics() {
+            document.getElementById('nnMetrics').textContent = `Epoch: ${nn.epoch} | Loss: ${nn.loss.toFixed(4)}`;
+        }
+
+        document.getElementById('trainStepBtn').addEventListener('click', () => trainEpochs(50));
+        document.getElementById('resetNnBtn').addEventListener('click', () => {
+            clearInterval(autoTimer);
+            autoTimer = null;
+            document.getElementById('autoTrainBtn').textContent = "Auto-Train";
+            resetNN();
+        });
+        document.getElementById('autoTrainBtn').addEventListener('click', (e) => {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+                e.target.textContent = "Auto-Train";
+            } else {
+                e.target.textContent = "Stop";
+                autoTimer = setInterval(() => trainEpochs(25), 60);
+            }
+        });
+
+        // 3. LIVE TOKENIZER & SOFTMAX
+        const promptInput = document.getElementById('promptInput');
+        const tokenList = document.getElementById('tokenList');
+        const probContainer = document.getElementById('probContainer');
+
+        const candidateNextTokens = ["saraf", "transformer", "deep-learning", "neural", "algoritma"];
+
+        function runTokenizer() {
+            const text = promptInput.value.trim();
+            const words = text ? text.split(/\s+/) : [];
+            
+            tokenList.innerHTML = words.map(w => {
+                const id = [...w].reduce((a, c) => a * 31 + c.charCodeAt(0), 7) % 50257;
+                return `<span class="token-chip">"${w}" <small style="opacity:0.7">#${id}</small></span>`;
+            }).join('');
+
+            // Pseudo-logits based on input hash
+            const seed = words.join('').length || 1;
+            const logits = candidateNextTokens.map((_, i) => Math.sin(seed * (i + 1.7)) * 2.5 + 2.5);
+            const exps = logits.map(l => Math.exp(l));
+            const sumExp = exps.reduce((a, b) => a + b, 0);
+            const probs = exps.map(e => (e / sumExp) * 100);
+
+            probContainer.innerHTML = candidateNextTokens.map((tok, i) => `
+                <div class="prob-bar-wrap">
+                    <div class="prob-label">
+                        <span>Next Token: <strong>"${tok}"</strong></span>
+                        <span>${probs[i].toFixed(1)}%</span>
+                    </div>
+                    <div class="prob-track">
+                        <div class="prob-fill" style="width: ${probs[i]}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        promptInput.addEventListener('input', runTokenizer);
+
+        // Init
+        selectStage(0);
+        resetNN();
+        runTokenizer();
+    </script>
+</body>
+</html>
